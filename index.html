@@ -3,177 +3,150 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171428">
-  <meta name="description" content="Crea, personaliza y guarda fichas de personajes para tus aventuras RPG.">
-  <title>Forja RPG · Creador de personajes</title>
+  <meta name="theme-color" content="#090b0d">
+  <meta name="description" content="Crea, equipa y guarda héroes para tus campañas RPG.">
+  <title>Forja RPG · Héroes</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="ambient ambient-one" aria-hidden="true"></div>
-  <div class="ambient ambient-two" aria-hidden="true"></div>
-
-  <header class="site-header">
+  <header class="app-header">
     <a class="brand" href="#inicio" aria-label="Forja RPG, inicio">
       <span>VP</span>
-      <span class="brand-copy"><strong>Forja RPG</strong><small>Creador de personajes</small></span>
+      <strong>Forja<span>RPG</span></strong>
     </a>
-
-    <nav class="header-actions" aria-label="Acciones de la ficha">
-      <button class="button button-ghost" id="newCharacter" type="button">
-        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        <span>Nueva ficha</span>
-      </button>
-      <button class="button button-ghost" id="exportCharacter" type="button">
-        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 15v4h14v-4"/></svg>
-        <span>Exportar</span>
-      </button>
-      <button class="button button-primary" id="saveCharacter" type="button">
-        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l2 2v16H5zM8 3v6h8V3M8 21v-8h8v8"/></svg>
-        <span>Guardar</span>
-      </button>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a href="#inicio"><span aria-hidden="true">▷</span> Jugar</a>
+      <a href="#inicio"><span aria-hidden="true">⌂</span> La taberna</a>
+      <a class="active" href="#inicio"><span aria-hidden="true">♙</span> Héroes</a>
+      <a href="#historia"><span aria-hidden="true">◎</span> Mundo</a>
+      <a href="#inventario"><span aria-hidden="true">◇</span> Taller</a>
     </nav>
+    <div class="header-tools">
+      <button class="tool-button" id="rollDice" type="button" title="Lanzar d20" aria-label="Lanzar dado de veinte caras">d20</button>
+      <button class="tool-button" id="exportCharacter" type="button" title="Exportar ficha" aria-label="Exportar ficha">⇩</button>
+      <button class="avatar-button" type="button" title="Perfil">VP</button>
+    </div>
   </header>
 
-  <main id="inicio" class="app-shell">
-    <section class="hero" aria-labelledby="pageTitle">
+  <main id="inicio" class="page-shell">
+    <div class="breadcrumb"><a href="#inicio">← &nbsp;Héroes</a><span>Ficha de personaje</span></div>
+    <section class="page-titlebar">
       <div>
-        <p class="eyebrow"><span></span> Hoja de personaje</p>
-        <h1 id="pageTitle">Da vida a tu próxima <em>leyenda.</em></h1>
-        <p>Moldea sus atributos, equipa su inventario y escribe las habilidades que cambiarán el rumbo de la campaña.</p>
+        <div class="title-row"><h1 id="displayName">Héroe sin nombre</h1><span class="ready-badge">✦ Ficha lista</span></div>
+        <p id="displayMeta">Nivel 1 · Humano · Guerrero/a — estadísticas, equipo e historia de un vistazo.</p>
       </div>
-      <button class="dice-card" id="rollDice" type="button" aria-label="Lanzar un dado de veinte caras">
-        <span class="dice-icon" aria-hidden="true">20</span>
-        <span><small>Tirada rápida</small><strong id="diceResult">Lanzar d20</strong></span>
-      </button>
+      <div class="title-actions">
+        <button class="button button-ghost" id="newCharacter" type="button">＋ Nueva ficha</button>
+        <button class="button button-primary" id="saveCharacter" type="button">✦ Guardar héroe</button>
+      </div>
     </section>
 
     <form id="characterForm" novalidate>
-      <section class="character-overview panel">
-        <div class="portrait-column">
-          <div class="portrait-frame">
-            <img id="portraitPreview" src="assets/portraits/guardian.svg" alt="Retrato del personaje">
-            <label class="portrait-upload" for="portraitUpload" title="Subir retrato">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3"/></svg>
-              <span class="sr-only">Subir retrato personalizado</span>
-            </label>
-            <input id="portraitUpload" type="file" accept="image/*" hidden>
-          </div>
+      <div class="character-layout">
+        <aside class="character-sidebar">
+          <section class="hero-card" aria-label="Retrato e identidad principal">
+            <div class="portrait-stage">
+              <span class="level-medallion" id="levelBadge">1</span>
+              <img id="portraitPreview" src="assets/portraits/guardian.svg" alt="Retrato del personaje">
+              <label class="portrait-upload" for="portraitUpload"><span>⌁</span> Cambiar retrato<input id="portraitUpload" type="file" accept="image/*" hidden></label>
+            </div>
+            <div class="hero-card-copy"><strong id="cardName">Héroe sin nombre</strong><span id="cardMeta">HUMANO · GUERRERO/A</span></div>
+            <div class="hero-card-stats">
+              <span class="life-pill">♥ <b id="cardHp">12</b> PV</span>
+              <span class="armor-pill">⬡ <b id="cardArmor">12</b> CA</span>
+              <span class="init-pill">ϟ <b id="cardInitiative">+0</b> INI</span>
+            </div>
+          </section>
+
           <div class="portrait-presets" aria-label="Retratos predeterminados">
-            <button class="preset active" type="button" data-portrait="assets/portraits/guardian.svg" aria-label="Elegir retrato guardián"><img src="assets/portraits/guardian.svg" alt=""></button>
-            <button class="preset" type="button" data-portrait="assets/portraits/mage.svg" aria-label="Elegir retrato maga"><img src="assets/portraits/mage.svg" alt=""></button>
-            <button class="preset" type="button" data-portrait="assets/portraits/rogue.svg" aria-label="Elegir retrato pícaro"><img src="assets/portraits/rogue.svg" alt=""></button>
-            <button class="preset" type="button" data-portrait="assets/portraits/ranger.svg" aria-label="Elegir retrato exploradora"><img src="assets/portraits/ranger.svg" alt=""></button>
+            <button class="preset active" type="button" data-portrait="assets/portraits/guardian.svg" aria-label="Elegir guardián"><img src="assets/portraits/guardian.svg" alt=""></button>
+            <button class="preset" type="button" data-portrait="assets/portraits/mage.svg" aria-label="Elegir maga"><img src="assets/portraits/mage.svg" alt=""></button>
+            <button class="preset" type="button" data-portrait="assets/portraits/rogue.svg" aria-label="Elegir pícaro"><img src="assets/portraits/rogue.svg" alt=""></button>
+            <button class="preset" type="button" data-portrait="assets/portraits/ranger.svg" aria-label="Elegir exploradora"><img src="assets/portraits/ranger.svg" alt=""></button>
           </div>
-          <p class="portrait-hint">Elige un héroe o sube tu propia imagen</p>
-        </div>
 
-        <div class="identity-column">
-          <div class="name-field">
-            <label for="characterName">Nombre del personaje</label>
-            <input id="characterName" name="characterName" type="text" placeholder="Ej. Lyra Valebris" maxlength="42" autocomplete="off">
-          </div>
-          <div class="field-grid">
-            <label class="field">Clase
-              <select id="characterClass" name="characterClass">
-                <option>Guerrero/a</option><option>Mago/a</option><option>Pícaro/a</option><option>Explorador/a</option><option>Clérigo/a</option><option>Bardo/a</option><option>Paladín</option><option>Druida</option>
-              </select>
-            </label>
-            <label class="field">Linaje
-              <select id="characterRace" name="characterRace">
-                <option>Humano</option><option>Elfo</option><option>Enano</option><option>Mediano</option><option>Tiefling</option><option>Dracónido</option><option>Orco</option><option>Feérico</option>
-              </select>
-            </label>
-            <label class="field">Trasfondo
-              <select id="characterBackground" name="characterBackground">
-                <option>Forastero</option><option>Noble</option><option>Artesano</option><option>Erudito</option><option>Criminal</option><option>Acólito</option><option>Marinero</option><option>Soldado</option>
-              </select>
-            </label>
-            <label class="field level-field">Nivel
-              <input id="characterLevel" name="characterLevel" type="number" value="1" min="1" max="20">
-            </label>
-          </div>
-          <label class="field story-field">Historia
-            <textarea id="characterStory" name="characterStory" rows="3" maxlength="360" placeholder="¿De dónde viene? ¿Qué juramento, pérdida o deseo lo empuja hacia la aventura?"></textarea>
-            <span class="char-count"><span id="storyCount">0</span>/360</span>
-          </label>
-        </div>
+          <section class="side-panel progress-panel">
+            <div class="progress-title"><span class="progress-icon">✦</span><div><strong>Tu leyenda crece</strong><small id="levelHint">Próximo nivel en camino</small></div></div>
+            <div class="progress-label"><span>Experiencia</span><b><span id="xpCurrent">300</span> / <span id="xpTarget">300</span> PX</b></div>
+            <div class="progress-track"><span id="xpBar"></span></div>
+            <button class="level-button" type="button" id="levelUp">✣ Subir de nivel</button>
+          </section>
 
-        <aside class="vitals" aria-label="Estadísticas vitales">
-          <div class="vital-main">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21S4 16 4 9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 3.5C20 16 12 21 12 21Z"/></svg>
-            <label for="hitPoints">Puntos de vida</label>
-            <input id="hitPoints" name="hitPoints" type="number" value="12" min="1" max="999">
-          </div>
-          <div class="vital-grid">
-            <label><span>Armadura</span><input id="armor" name="armor" type="number" value="12" min="0" max="40"></label>
-            <label><span>Iniciativa</span><output id="initiative">+0</output></label>
-            <label><span>Velocidad</span><div><input id="speed" name="speed" type="number" value="9" min="0" max="99"><small>m</small></div></label>
-            <label><span>Competencia</span><output id="proficiency">+2</output></label>
-          </div>
+          <section class="side-panel identity-panel">
+            <div class="panel-kicker">Identidad</div>
+            <label>Nombre<input id="characterName" name="characterName" type="text" placeholder="Nombre del héroe" maxlength="42" autocomplete="off"></label>
+            <label>Linaje<select id="characterRace" name="characterRace"><option>Humano</option><option>Elfo</option><option>Enano</option><option>Mediano</option><option>Tiefling</option><option>Dracónido</option><option>Orco</option><option>Feérico</option></select></label>
+            <label>Clase<select id="characterClass" name="characterClass"><option>Guerrero/a</option><option>Mago/a</option><option>Pícaro/a</option><option>Explorador/a</option><option>Clérigo/a</option><option>Bardo/a</option><option>Paladín</option><option>Druida</option></select></label>
+            <label>Trasfondo<select id="characterBackground" name="characterBackground"><option>Forastero</option><option>Noble</option><option>Artesano</option><option>Erudito</option><option>Criminal</option><option>Acólito</option><option>Marinero</option><option>Soldado</option></select></label>
+            <label>Nivel<input id="characterLevel" name="characterLevel" type="number" value="1" min="1" max="20"></label>
+          </section>
         </aside>
-      </section>
 
-      <section class="attributes-section panel" aria-labelledby="attributesTitle">
-        <div class="section-heading">
-          <div><span class="section-number">01</span><div><p>Atributos</p><h2 id="attributesTitle">Tu esencia aventurera</h2></div></div>
-          <div class="points-counter"><span>Puntos disponibles</span><strong id="pointsAvailable">27</strong></div>
+        <div class="dashboard-content">
+          <p class="area-label">PREPARADO PARA EL COMBATE</p>
+          <div class="combat-grid">
+            <section class="dashboard-panel attributes-section" aria-labelledby="attributesTitle">
+              <div class="panel-heading"><div><span>Atributos</span><h2 id="attributesTitle">Puntuaciones de habilidad</h2></div><div class="points-counter"><strong id="pointsAvailable">27</strong><span>puntos</span></div></div>
+              <div id="attributesGrid" class="attributes-grid"></div>
+              <div class="proficiency-row"><span>Bonificador de competencia</span><output id="proficiency">+2</output></div>
+              <p class="micro-note"><i></i> Distribuye 27 puntos · máximo 18 por atributo</p>
+            </section>
+
+            <section class="dashboard-panel combat-panel" aria-labelledby="combatTitle">
+              <div class="panel-heading"><div><span>Estado</span><h2 id="combatTitle">Combate</h2></div><span class="live-dot">LISTO</span></div>
+              <div class="combat-list">
+                <label><span><i>⬡</i> Clase de armadura</span><input id="armor" name="armor" type="number" value="12" min="0" max="40"></label>
+                <div><span><i>✣</i> Iniciativa</span><output id="initiative">+0</output></div>
+                <label><span><i>➜</i> Velocidad</span><span class="inline-value"><input id="speed" name="speed" type="number" value="9" min="0" max="99"> m</span></label>
+                <div><span><i>✦</i> Competencia</span><output id="proficiencyCombat">+2</output></div>
+                <div><span><i>◉</i> Percepción pasiva</span><output id="passivePerception">9</output></div>
+              </div>
+              <div class="attack-summary">
+                <div><span>⚔ Ataque cuerpo a cuerpo (FUE)</span><b id="meleeAttack">+0 / daño +0</b></div>
+                <div><span>➶ Ataque a distancia (DES)</span><b id="rangedAttack">+0 / daño +0</b></div>
+              </div>
+              <div class="hp-block">
+                <div><span>Puntos de vida</span><label><input id="hitPoints" name="hitPoints" type="number" value="12" min="1" max="999"> / <b id="hpMax">12</b></label></div>
+                <div class="hp-track"><span id="hpBar"></span></div>
+              </div>
+              <div class="save-row"><span>Salvaciones</span><div><small>Éxitos</small><i></i><i></i><i></i><small>Fallos</small><i></i><i></i><i></i></div></div>
+            </section>
+          </div>
+
+          <p class="area-label">CAPACIDADES</p>
+          <section class="dashboard-panel skills-section" aria-labelledby="skillsTitle">
+            <div class="panel-heading"><div><span>Talentos</span><h2 id="skillsTitle">Habilidades y competencias</h2></div><button class="small-add" id="addSkill" type="button">＋ Añadir</button></div>
+            <div id="skillsList" class="card-list"></div>
+            <button class="add-row-button" id="addSkillBottom" type="button">＋ Añadir habilidad</button>
+          </section>
+
+          <p class="area-label" id="inventario">EQUIPAMIENTO</p>
+          <section class="dashboard-panel inventory-section" aria-labelledby="inventoryTitle">
+            <div class="panel-heading"><div><span>Carga activa</span><h2 id="inventoryTitle">Inventario y riqueza</h2></div><label class="gold-counter"><span>◆</span><input id="gold" name="gold" type="number" value="25" min="0" max="999999"><small>PO</small></label></div>
+            <div class="coin-row" aria-label="Monedas"><span class="coin copper">C</span><b>0</b><span class="coin silver">P</span><b>0</b><span class="coin electrum">E</span><b>0</b><span class="coin gold">O</span><b id="goldPreview">25</b></div>
+            <div class="inventory-header" aria-hidden="true"><span>Objeto equipado</span><span>Cant.</span><span>Peso</span><span></span></div>
+            <div id="inventoryList" class="inventory-list"></div>
+            <div class="inventory-footer"><button class="add-row-button" id="addItem" type="button">＋ Añadir objeto</button><div class="weight-summary"><span>Carga total</span><strong><span id="totalWeight">0</span> kg</strong></div></div>
+          </section>
+
+          <p class="area-label" id="historia">HISTORIA</p>
+          <section class="dashboard-panel story-panel" aria-labelledby="storyTitle">
+            <div class="panel-heading"><div><span>Crónica</span><h2 id="storyTitle">Historia y notas de campaña</h2></div></div>
+            <div class="story-grid">
+              <label>Historia del personaje<textarea id="characterStory" name="characterStory" rows="6" maxlength="360" placeholder="Origen, motivaciones y juramentos..."></textarea><small><span id="storyCount">0</span>/360</small></label>
+              <label>Notas de campaña<textarea id="campaignNotes" name="campaignNotes" rows="6" maxlength="1200" placeholder="Aliados, enemigos, pistas, lugares y tesoros..."></textarea></label>
+            </div>
+          </section>
         </div>
-        <div id="attributesGrid" class="attributes-grid"></div>
-        <p class="section-note">Cada punto aumenta un atributo. Puedes repartir hasta 27 puntos adicionales, con un máximo de 18 por atributo.</p>
-      </section>
-
-      <div class="content-grid">
-        <section class="skills-section panel" aria-labelledby="skillsTitle">
-          <div class="section-heading compact">
-            <div><span class="section-number">02</span><div><p>Talentos</p><h2 id="skillsTitle">Habilidades</h2></div></div>
-            <button class="icon-button" id="addSkill" type="button" aria-label="Añadir habilidad"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-          </div>
-          <div id="skillsList" class="card-list"></div>
-          <button class="add-row-button" id="addSkillBottom" type="button"><span>+</span> Añadir habilidad</button>
-        </section>
-
-        <section class="inventory-section panel" aria-labelledby="inventoryTitle">
-          <div class="section-heading compact">
-            <div><span class="section-number">03</span><div><p>Equipo</p><h2 id="inventoryTitle">Inventario</h2></div></div>
-            <div class="gold-counter" title="Monedas de oro"><span aria-hidden="true">◆</span><input id="gold" name="gold" type="number" value="25" min="0" max="999999" aria-label="Monedas de oro"><small>PO</small></div>
-          </div>
-          <div class="inventory-header" aria-hidden="true"><span>Objeto</span><span>Cant.</span><span>Peso</span><span></span></div>
-          <div id="inventoryList" class="inventory-list"></div>
-          <button class="add-row-button" id="addItem" type="button"><span>+</span> Añadir objeto</button>
-          <div class="weight-summary"><span>Carga total</span><strong><span id="totalWeight">0</span> kg</strong></div>
-        </section>
       </div>
-
-      <section class="notes-section panel" aria-labelledby="notesTitle">
-        <div class="section-heading compact">
-          <div><span class="section-number">04</span><div><p>Crónica</p><h2 id="notesTitle">Notas de campaña</h2></div></div>
-        </div>
-        <textarea id="campaignNotes" name="campaignNotes" rows="5" maxlength="1200" placeholder="Aliados, enemigos, pistas, lugares y tesoros pendientes..."></textarea>
-      </section>
     </form>
   </main>
 
-  <footer>
-    <span class="footer-mark">VP</span>
-    <p>Forja RPG · Tu historia empieza con una ficha.</p>
-    <button id="printCharacter" type="button">Imprimir ficha</button>
-  </footer>
-
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <span class="toast-icon">✓</span><span id="toastMessage">Ficha guardada</span>
-  </div>
-
-  <dialog id="confirmDialog">
-    <div class="dialog-icon">✦</div>
-    <h2>¿Empezar una nueva leyenda?</h2>
-    <p>La ficha actual se sustituirá por una en blanco. Exporta una copia antes si quieres conservarla.</p>
-    <div class="dialog-actions">
-      <button class="button button-ghost" id="cancelNew" type="button">Cancelar</button>
-      <button class="button button-danger" id="confirmNew" type="button">Nueva ficha</button>
-    </div>
-  </dialog>
-
+  <footer><span>VP</span><p>Forja RPG · Cada leyenda empieza con una ficha.</p><button id="printCharacter" type="button">Imprimir ficha</button></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><span id="toastMessage">Ficha guardada</span></div>
+  <dialog id="confirmDialog"><div class="dialog-icon">✦</div><h2>¿Empezar una nueva leyenda?</h2><p>La ficha actual se sustituirá por una en blanco. Exporta una copia antes si quieres conservarla.</p><div class="dialog-actions"><button class="button button-ghost" id="cancelNew" type="button">Cancelar</button><button class="button button-danger" id="confirmNew" type="button">Nueva ficha</button></div></dialog>
+  <span id="diceResult" hidden>Lanzar d20</span>
   <script src="app.js"></script>
 </body>
 </html>

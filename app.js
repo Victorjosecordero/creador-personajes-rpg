@@ -92,6 +92,7 @@
     });
     const dexterity = Number($("[data-attribute='dexterity']")?.value || 8);
     $("#initiative").textContent = signed(modifier(dexterity));
+    updateDerivedStats();
   }
 
   function createSkill(skill = { name: "Nueva habilidad", description: "Describe su efecto" }) {
@@ -193,7 +194,41 @@
 
   function updateDerivedStats() {
     const level = Math.max(1, Math.min(20, Number($("#characterLevel").value) || 1));
-    $("#proficiency").textContent = signed(2 + Math.floor((level - 1) / 4));
+    const proficiency = 2 + Math.floor((level - 1) / 4);
+    const strength = Number($("[data-attribute='strength']")?.value || 8);
+    const dexterity = Number($("[data-attribute='dexterity']")?.value || 8);
+    const wisdom = Number($("[data-attribute='wisdom']")?.value || 8);
+    const hitPoints = Math.max(1, Number($("#hitPoints").value) || 1);
+    const armor = Math.max(0, Number($("#armor").value) || 0);
+    const gold = Math.max(0, Number($("#gold").value) || 0);
+    const name = $("#characterName").value.trim() || "Héroe sin nombre";
+    const characterClass = $("#characterClass").value;
+    const race = $("#characterRace").value;
+
+    $("#proficiency").textContent = signed(proficiency);
+    $("#proficiencyCombat").textContent = signed(proficiency);
+    $("#passivePerception").textContent = 10 + modifier(wisdom);
+    $("#meleeAttack").textContent = `${signed(proficiency + modifier(strength))} / daño ${signed(modifier(strength))}`;
+    $("#rangedAttack").textContent = `${signed(proficiency + modifier(dexterity))} / daño ${signed(modifier(dexterity))}`;
+    $("#displayName").textContent = name;
+    $("#displayMeta").textContent = `Nivel ${level} · ${race} · ${characterClass} — estadísticas, equipo e historia de un vistazo.`;
+    $("#cardName").textContent = name;
+    $("#cardMeta").textContent = `${race} · ${characterClass}`.toUpperCase();
+    $("#levelBadge").textContent = level;
+    $("#cardHp").textContent = hitPoints;
+    $("#cardArmor").textContent = armor;
+    $("#cardInitiative").textContent = signed(modifier(dexterity));
+    $("#hpMax").textContent = hitPoints;
+    $("#hpBar").style.width = "100%";
+    $("#goldPreview").textContent = gold;
+
+    const xpTarget = level >= 20 ? 0 : level * 300;
+    $("#xpCurrent").textContent = xpTarget.toLocaleString("es-ES");
+    $("#xpTarget").textContent = xpTarget.toLocaleString("es-ES");
+    $("#xpBar").style.width = level >= 20 ? "100%" : "100%";
+    $("#levelHint").textContent = level >= 20 ? "Leyenda de nivel máximo" : `Nivel ${level + 1} disponible`;
+    $("#levelUp").disabled = level >= 20;
+    $("#levelUp").textContent = level >= 20 ? "✦ Nivel máximo" : `✣ Subir a nivel ${level + 1}`;
   }
 
   function updateStoryCount() {
@@ -283,6 +318,15 @@
   inventoryList.addEventListener("input", updateWeight);
   $("#characterStory").addEventListener("input", updateStoryCount);
   $("#characterLevel").addEventListener("input", updateDerivedStats);
+  $("#levelUp").addEventListener("click", () => {
+    const levelInput = $("#characterLevel");
+    const level = Math.max(1, Math.min(20, Number(levelInput.value) || 1));
+    if (level >= 20) return;
+    levelInput.value = level + 1;
+    updateDerivedStats();
+    queueAutoSave();
+    showToast(`Has alcanzado el nivel ${level + 1}`, "✦");
+  });
 
   $$(".preset").forEach(button => button.addEventListener("click", () => {
     setPortrait(button.dataset.portrait);
@@ -304,14 +348,13 @@
 
   $("#rollDice").addEventListener("click", () => {
     const button = $("#rollDice");
-    button.classList.remove("rolling");
-    void button.offsetWidth;
-    button.classList.add("rolling");
     const result = Math.floor(Math.random() * 20) + 1;
-    setTimeout(() => {
-      $("#diceResult").textContent = result === 20 ? "20 · ¡Crítico!" : result === 1 ? "1 · Pifia" : `${result} en el dado`;
-      $(".dice-icon").textContent = result;
-    }, 220);
+    const message = result === 20 ? "20 · ¡Crítico!" : result === 1 ? "1 · Pifia" : `${result} en el dado`;
+    $("#diceResult").textContent = message;
+    button.textContent = result;
+    button.classList.add("rolled");
+    showToast(message, "◇");
+    setTimeout(() => { button.textContent = "d20"; button.classList.remove("rolled"); }, 1600);
   });
 
   $("#saveCharacter").addEventListener("click", saveState);
@@ -331,7 +374,13 @@
   });
 
   form.addEventListener("input", event => {
-    if (event.target.matches("input, textarea, select")) queueAutoSave();
+    if (event.target.matches("input, textarea, select")) {
+      updateDerivedStats();
+      queueAutoSave();
+    }
+  });
+  form.addEventListener("change", event => {
+    if (event.target.matches("select")) updateDerivedStats();
   });
 
   let saved = null;
