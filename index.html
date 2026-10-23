@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171428">
+  <meta name="description" content="Crea, personaliza y guarda fichas de personajes para tus aventuras RPG.">
+  <title>Forja RPG · Creador de personajes</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Forja RPG, inicio">
+      <span>VP</span>
+      <span class="brand-copy"><strong>Forja RPG</strong><small>Creador de personajes</small></span>
+    </a>
+
+    <nav class="header-actions" aria-label="Acciones de la ficha">
+      <button class="button button-ghost" id="newCharacter" type="button">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Nueva ficha</span>
+      </button>
+      <button class="button button-ghost" id="exportCharacter" type="button">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 15v4h14v-4"/></svg>
+        <span>Exportar</span>
+      </button>
+      <button class="button button-primary" id="saveCharacter" type="button">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l2 2v16H5zM8 3v6h8V3M8 21v-8h8v8"/></svg>
+        <span>Guardar</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="inicio" class="app-shell">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow"><span></span> Hoja de personaje</p>
+        <h1 id="pageTitle">Da vida a tu próxima <em>leyenda.</em></h1>
+        <p>Moldea sus atributos, equipa su inventario y escribe las habilidades que cambiarán el rumbo de la campaña.</p>
+      </div>
+      <button class="dice-card" id="rollDice" type="button" aria-label="Lanzar un dado de veinte caras">
+        <span class="dice-icon" aria-hidden="true">20</span>
+        <span><small>Tirada rápida</small><strong id="diceResult">Lanzar d20</strong></span>
+      </button>
+    </section>
+
+    <form id="characterForm" novalidate>
+      <section class="character-overview panel">
+        <div class="portrait-column">
+          <div class="portrait-frame">
+            <img id="portraitPreview" src="assets/portraits/guardian.svg" alt="Retrato del personaje">
+            <label class="portrait-upload" for="portraitUpload" title="Subir retrato">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3"/></svg>
+              <span class="sr-only">Subir retrato personalizado</span>
+            </label>
+            <input id="portraitUpload" type="file" accept="image/*" hidden>
+          </div>
+          <div class="portrait-presets" aria-label="Retratos predeterminados">
+            <button class="preset active" type="button" data-portrait="assets/portraits/guardian.svg" aria-label="Elegir retrato guardián"><img src="assets/portraits/guardian.svg" alt=""></button>
+            <button class="preset" type="button" data-portrait="assets/portraits/mage.svg" aria-label="Elegir retrato maga"><img src="assets/portraits/mage.svg" alt=""></button>
+            <button class="preset" type="button" data-portrait="assets/portraits/rogue.svg" aria-label="Elegir retrato pícaro"><img src="assets/portraits/rogue.svg" alt=""></button>
+            <button class="preset" type="button" data-portrait="assets/portraits/ranger.svg" aria-label="Elegir retrato exploradora"><img src="assets/portraits/ranger.svg" alt=""></button>
+          </div>
+          <p class="portrait-hint">Elige un héroe o sube tu propia imagen</p>
+        </div>
+
+        <div class="identity-column">
+          <div class="name-field">
+            <label for="characterName">Nombre del personaje</label>
+            <input id="characterName" name="characterName" type="text" placeholder="Ej. Lyra Valebris" maxlength="42" autocomplete="off">
+          </div>
+          <div class="field-grid">
+            <label class="field">Clase
+              <select id="characterClass" name="characterClass">
+                <option>Guerrero/a</option><option>Mago/a</option><option>Pícaro/a</option><option>Explorador/a</option><option>Clérigo/a</option><option>Bardo/a</option><option>Paladín</option><option>Druida</option>
+              </select>
+            </label>
+            <label class="field">Linaje
+              <select id="characterRace" name="characterRace">
+                <option>Humano</option><option>Elfo</option><option>Enano</option><option>Mediano</option><option>Tiefling</option><option>Dracónido</option><option>Orco</option><option>Feérico</option>
+              </select>
+            </label>
+            <label class="field">Trasfondo
+              <select id="characterBackground" name="characterBackground">
+                <option>Forastero</option><option>Noble</option><option>Artesano</option><option>Erudito</option><option>Criminal</option><option>Acólito</option><option>Marinero</option><option>Soldado</option>
+              </select>
+            </label>
+            <label class="field level-field">Nivel
+              <input id="characterLevel" name="characterLevel" type="number" value="1" min="1" max="20">
+            </label>
+          </div>
+          <label class="field story-field">Historia
+            <textarea id="characterStory" name="characterStory" rows="3" maxlength="360" placeholder="¿De dónde viene? ¿Qué juramento, pérdida o deseo lo empuja hacia la aventura?"></textarea>
+            <span class="char-count"><span id="storyCount">0</span>/360</span>
+          </label>
+        </div>
+
+        <aside class="vitals" aria-label="Estadísticas vitales">
+          <div class="vital-main">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21S4 16 4 9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 3.5C20 16 12 21 12 21Z"/></svg>
+            <label for="hitPoints">Puntos de vida</label>
+            <input id="hitPoints" name="hitPoints" type="number" value="12" min="1" max="999">
+          </div>
+          <div class="vital-grid">
+            <label><span>Armadura</span><input id="armor" name="armor" type="number" value="12" min="0" max="40"></label>
+            <label><span>Iniciativa</span><output id="initiative">+0</output></label>
+            <label><span>Velocidad</span><div><input id="speed" name="speed" type="number" value="9" min="0" max="99"><small>m</small></div></label>
+            <label><span>Competencia</span><output id="proficiency">+2</output></label>
+          </div>
+        </aside>
+      </section>
+
+      <section class="attributes-section panel" aria-labelledby="attributesTitle">
+        <div class="section-heading">
+          <div><span class="section-number">01</span><div><p>Atributos</p><h2 id="attributesTitle">Tu esencia aventurera</h2></div></div>
+          <div class="points-counter"><span>Puntos disponibles</span><strong id="pointsAvailable">27</strong></div>
+        </div>
+        <div id="attributesGrid" class="attributes-grid"></div>
+        <p class="section-note">Cada punto aumenta un atributo. Puedes repartir hasta 27 puntos adicionales, con un máximo de 18 por atributo.</p>
+      </section>
+
+      <div class="content-grid">
+        <section class="skills-section panel" aria-labelledby="skillsTitle">
+          <div class="section-heading compact">
+            <div><span class="section-number">02</span><div><p>Talentos</p><h2 id="skillsTitle">Habilidades</h2></div></div>
+            <button class="icon-button" id="addSkill" type="button" aria-label="Añadir habilidad"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          </div>
+          <div id="skillsList" class="card-list"></div>
+          <button class="add-row-button" id="addSkillBottom" type="button"><span>+</span> Añadir habilidad</button>
+        </section>
+
+        <section class="inventory-section panel" aria-labelledby="inventoryTitle">
+          <div class="section-heading compact">
+            <div><span class="section-number">03</span><div><p>Equipo</p><h2 id="inventoryTitle">Inventario</h2></div></div>
+            <div class="gold-counter" title="Monedas de oro"><span aria-hidden="true">◆</span><input id="gold" name="gold" type="number" value="25" min="0" max="999999" aria-label="Monedas de oro"><small>PO</small></div>
+          </div>
+          <div class="inventory-header" aria-hidden="true"><span>Objeto</span><span>Cant.</span><span>Peso</span><span></span></div>
+          <div id="inventoryList" class="inventory-list"></div>
+          <button class="add-row-button" id="addItem" type="button"><span>+</span> Añadir objeto</button>
+          <div class="weight-summary"><span>Carga total</span><strong><span id="totalWeight">0</span> kg</strong></div>
+        </section>
+      </div>
+
+      <section class="notes-section panel" aria-labelledby="notesTitle">
+        <div class="section-heading compact">
+          <div><span class="section-number">04</span><div><p>Crónica</p><h2 id="notesTitle">Notas de campaña</h2></div></div>
+        </div>
+        <textarea id="campaignNotes" name="campaignNotes" rows="5" maxlength="1200" placeholder="Aliados, enemigos, pistas, lugares y tesoros pendientes..."></textarea>
+      </section>
+    </form>
+  </main>
+
+  <footer>
+    <span class="footer-mark">VP</span>
+    <p>Forja RPG · Tu historia empieza con una ficha.</p>
+    <button id="printCharacter" type="button">Imprimir ficha</button>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon">✓</span><span id="toastMessage">Ficha guardada</span>
+  </div>
+
+  <dialog id="confirmDialog">
+    <div class="dialog-icon">✦</div>
+    <h2>¿Empezar una nueva leyenda?</h2>
+    <p>La ficha actual se sustituirá por una en blanco. Exporta una copia antes si quieres conservarla.</p>
+    <div class="dialog-actions">
+      <button class="button button-ghost" id="cancelNew" type="button">Cancelar</button>
+      <button class="button button-danger" id="confirmNew" type="button">Nueva ficha</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
